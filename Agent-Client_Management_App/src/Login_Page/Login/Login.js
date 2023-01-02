@@ -9,7 +9,7 @@ import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -38,7 +38,7 @@ function Login() {
       redirect: "follow",
     };
 
-    fetch("http://localhost:5000/login/", requestOptions)
+    fetch("http://localhost:5000/project/login/", requestOptions)
       .then((res) => {
         // console.log(res);
         if (res.status >= 400) {
@@ -50,39 +50,15 @@ function Login() {
         (data) => {
           setData(data);
           sessionStorage.setItem("Token", data);
-          navigate("/deshboard");
+          navigate("/dashboard");
         },
         (err) => {
           alert(err);
         }
       );
   };
-
   return (
     <div>
-      {/* <div>
-        <h1>Login Page In React </h1>
-        <label>UserName</label>
-        <input
-          type={"text"}
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-        <br />
-        <label>Password</label>
-        <input
-          type={"text"}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        <br />
-        <button type="submit" onClick={handelLogin}>
-          Login
-        </button>
-      </div> */}
-
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <Box

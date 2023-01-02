@@ -4,13 +4,17 @@ import "./index.css";
 import App from "./Login_Page/App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+import { StyledEngineProvider } from "@mui/material";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <React.StrictMode>
-    <Router>
-      <App />
-    </Router>
+    <StyledEngineProvider injectFirst>
+      <Router>
+        <App />
+      </Router>
+    </StyledEngineProvider>
   </React.StrictMode>
 );
 

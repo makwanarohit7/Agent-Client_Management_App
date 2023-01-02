@@ -1,7 +1,6 @@
 import { Fragment } from "react";
-import Login from "./Login";
-import User from "./User";
-import Deshboard from "./Deshboard";
+import Login from "./Login/Login";
+import Dashboard from "./Dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -9,8 +8,7 @@ function App() {
     <Fragment>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/user" element={<User />} />
-        <Route path="/deshboard" element={<Deshboard />} />
+        <Route path="/dashboard/*" element={<Dashboard />} />
       </Routes>
     </Fragment>
   );
