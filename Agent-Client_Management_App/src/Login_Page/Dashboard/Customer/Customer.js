@@ -3,6 +3,7 @@ import {
   Button,
   Collapse,
   IconButton,
+  InputBase,
   Paper,
   Snackbar,
   Table,
@@ -11,20 +12,26 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { styled, alpha } from "@mui/material/styles";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { Box } from "@mui/system";
-import AddCustomer from "./AddCustomer";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import { Fragment, useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import Stack from "@mui/material/Stack";
+import { useNavigate } from "react-router-dom";
 
 function Row(props) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { row, onDeleteClick } = props;
+  const { row, onDeleteClick, onhandleClick } = props;
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -44,9 +51,29 @@ function Row(props) {
             variant="contained"
             onClick={() => {
               onDeleteClick(row.customer_id);
+              onhandleClick();
             }}
           >
             Detele
+          </Button>
+          <></>
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate(`/dashboard/customer/UpdateCustomer/${row.customer_id}`);
+            }}
+          >
+            Update
+          </Button>
+        </TableCell>
+        <TableCell align="left">
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate(`/dashboard/assign-policy/${row.customer_id}`);
+            }}
+          >
+            Assign Policy
           </Button>
         </TableCell>
       </TableRow>
@@ -66,16 +93,6 @@ function Row(props) {
                   <li>Mobile Number : {row.customer_mobile_number}</li>
                   <li>Email : {row.customer_email}</li>
                 </ul>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    navigate(
-                      `/dashboard/customer/UpdateCustomer/${row.customer_id}`
-                    );
-                  }}
-                >
-                  Update
-                </Button>
               </Typography>
             </Box>
           </Collapse>
@@ -87,6 +104,10 @@ function Row(props) {
 function Customer() {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
+  const [searchButton, setSearchButton] = useState(false);
+  const [search, setSearch] = useState("");
+  const [id, setId] = useState("");
+  const [dopen, setDOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -94,11 +115,13 @@ function Customer() {
       method: "GET",
       redirect: "follow",
     };
-    fetch("http://localhost:5000/customer", requestOptions)
+    fetch("http://localhost:5000/customer/" + search, requestOptions)
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.log("error", error));
-  }, [open]);
+    setSearchButton(false);
+    // console.log("call");
+  }, [open, searchButton]);
 
   const handleDeleteClick = (id) => {
     var requestOptions = {
@@ -109,10 +132,20 @@ function Customer() {
       .then((response) => response.text())
       .then((result) => console.log(result), setOpen(true))
       .catch((error) => console.log("error", error));
-  };
 
+    handledClose();
+  };
+  const handleClickdOpen = () => {
+    setDOpen(true);
+  };
+  const handledClose = () => {
+    setDOpen(false);
+  };
   const handleClose = () => {
     setOpen(false);
+  };
+  const handleSearch = () => {
+    setSearchButton(true);
   };
 
   return (
@@ -123,6 +156,39 @@ function Customer() {
         </Alert>
       </Snackbar>
       <h1>Customer Details</h1>
+      <div>
+        <Dialog
+          open={dopen}
+          onClose={handledClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are You Sure , You Want To Delete User ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handledClose}>Disagree</Button>
+            <Button onClick={() => handleDeleteClick(id)}>Agree</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <TextField
+        variant="outlined"
+        label="Search ID*"
+        type="number"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
+      <Button variant="contained" onClick={handleSearch}>
+        <SearchIcon />
+      </Button>
+      <br />
+      <br />
       <Button
         variant="contained"
         onClick={() => {
@@ -140,7 +206,8 @@ function Customer() {
               <TableCell />
               <TableCell>Customer Id</TableCell>
               <TableCell align="left">Name</TableCell>
-              <TableCell align="left">Delete</TableCell>
+              <TableCell align="left">Action Performed</TableCell>
+              <TableCell align="left">Assign Policy</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,7 +215,8 @@ function Customer() {
               <Row
                 key={item.customer_id}
                 row={item}
-                onDeleteClick={handleDeleteClick}
+                onDeleteClick={(id) => setId(id)}
+                onhandleClick={handleClickdOpen}
               />
             ))}
           </TableBody>

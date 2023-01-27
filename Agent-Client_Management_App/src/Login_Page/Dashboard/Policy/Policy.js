@@ -1,9 +1,16 @@
 import {
+  Alert,
   Box,
   Button,
   Collapse,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -18,7 +25,8 @@ import { useNavigate } from "react-router-dom";
 
 function Row(props) {
   const navigate = useNavigate();
-  const { row } = props;
+  const [open, setOpen] = useState(false);
+  const { row, onDeleteClick, onhandleClick } = props;
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
@@ -28,7 +36,7 @@ function Row(props) {
           <Button
             variant="contained"
             onClick={() => {
-              navigate("/dashboard/customer/UpdatePolicy");
+              navigate(`/dashboard/customer/UpdatePolicy/${row.policy_id}`);
             }}
           >
             Update
@@ -38,7 +46,9 @@ function Row(props) {
           <Button
             variant="contained"
             onClick={() => {
-              navigate("/dashboard/customer/DeletePolicy");
+              // navigate("/dashboard/customer/DeletePolicy");
+              onDeleteClick(row.policy_id);
+              onhandleClick();
             }}
           >
             Detele
@@ -50,6 +60,13 @@ function Row(props) {
 }
 function Policy() {
   const [data, setData] = useState([]);
+  // console.log(data);
+  const [open, setOpen] = useState(false);
+  const [id, setId] = useState("");
+  const [dopen, setDOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
   const navigate = useNavigate();
   useEffect(() => {
     var requestOptions = {
@@ -60,10 +77,54 @@ function Policy() {
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.log("error", error));
-  });
+  }, [open]);
+  const handleClickdOpen = () => {
+    setDOpen(true);
+  };
+  const handledClose = () => {
+    setDOpen(false);
+  };
+  const handleDeleteClick = (id) => {
+    var requestOptions = {
+      method: "DELETE",
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/policy/" + id, requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result), setOpen(true))
+      .catch((error) => console.log("error", error));
+
+    handledClose();
+  };
+
   return (
     <div>
       <h1>Policy</h1>
+      <div>
+        <Dialog
+          open={dopen}
+          onClose={handledClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are You Sure , You Want To Delete Policy ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handledClose}>Disagree</Button>
+            <Button onClick={() => handleDeleteClick(id)}>Agree</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          success Delete User
+        </Alert>
+      </Snackbar>
       <Button
         variant="contained"
         onClick={() => {
@@ -86,7 +147,12 @@ function Policy() {
           </TableHead>
           <TableBody>
             {data.map((item) => (
-              <Row key={item.policy_id} row={item} />
+              <Row
+                key={item.policy_id}
+                row={item}
+                onDeleteClick={(id) => setId(id)}
+                onhandleClick={handleClickdOpen}
+              />
             ))}
           </TableBody>
         </Table>

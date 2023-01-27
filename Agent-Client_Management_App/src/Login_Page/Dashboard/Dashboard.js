@@ -2,9 +2,11 @@ import Customer from "./Customer/Customer";
 import Home from "./Home Page/Home";
 import Policy from "./Policy/Policy";
 import { Box } from "@mui/system";
+
 import {
   AppBar,
   Avatar,
+  Button,
   CssBaseline,
   Divider,
   Drawer,
@@ -21,14 +23,16 @@ import AddCustomer from "./Customer/AddCustomer";
 
 import UpdateCustomer from "./Customer/UpdateCustomer";
 import AddPolicy from "./Policy/AddPolicy";
-import DeletePolicy from "./Policy/DeletePolicy";
+
 import UpdatePolicy from "./Policy/UpdatePolicy";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-
+import "./Dashboard.css";
+import Assign_policy from "./Assign_policy";
 function Dashboard() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const drawerWidth = 240;
+
   return (
     <Fragment>
       <main>
@@ -40,11 +44,21 @@ function Dashboard() {
               width: `calc(100% - ${drawerWidth}px)`,
               ml: `${drawerWidth}px`,
             }}
-            style={{ backgroundColor: "Blue" }}
+            style={{ backgroundColor: "#f7832a" }}
           >
             <Toolbar>
               <Typography variant="h6" noWrap component="div">
                 React {pathname}
+                <Button
+                  className="logout_button"
+                  variant="contained"
+                  onClick={() => {
+                    sessionStorage.removeItem("Token");
+                    navigate("/");
+                  }}
+                >
+                  Log Out
+                </Button>
               </Typography>
             </Toolbar>
           </AppBar>
@@ -60,7 +74,21 @@ function Dashboard() {
             variant="permanent"
             anchor="left"
           >
-            <Toolbar style={{ backgroundColor: "Blue" }} />
+            <Toolbar style={{ backgroundColor: "#f7832a", color: "white" }}>
+              <List>
+                <ListItem
+                  disablePadding
+                  onClick={() => {
+                    navigate("/dashboard");
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon></ListItemIcon>
+                    <ListItemText primary={"Home"} />
+                  </ListItemButton>
+                </ListItem>
+              </List>
+            </Toolbar>
             <Divider />
             <List>
               <ListItem
@@ -90,8 +118,6 @@ function Dashboard() {
                 </ListItemButton>
               </ListItem>
             </List>
-
-            <Divider />
           </Drawer>
           <Box
             component="main"
@@ -100,6 +126,10 @@ function Dashboard() {
             <Toolbar />
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route
+                path="/assign-policy/:userId"
+                element={<Assign_policy />}
+              />
               <Route path="customer/*" element={<Customer />} />
               <Route path="policy/*" element={<Policy />} />
               <Route path="/customer/AddCustomer" element={<AddCustomer />} />
@@ -109,8 +139,10 @@ function Dashboard() {
               />
 
               <Route path="/customer/AddPolicy" element={<AddPolicy />} />
-              <Route path="/customer/UpdatePolicy" element={<UpdatePolicy />} />
-              <Route path="/customer/DeletePolicy" element={<DeletePolicy />} />
+              <Route
+                path="/customer/UpdatePolicy/:userId"
+                element={<UpdatePolicy />}
+              />
             </Routes>
           </Box>
         </Box>

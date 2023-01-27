@@ -1,5 +1,9 @@
 import { Alert, Button, Dialog, Snackbar, TextField } from "@mui/material";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  DesktopDatePicker,
+  LocalizationProvider,
+  MobileDatePicker,
+} from "@mui/x-date-pickers";
 import React, { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -29,6 +33,7 @@ function AddCustomer() {
       address: address,
       pincode: pincode,
       birthdate: date,
+      // birthdate: value.$y + "-" + (value.$M + 1) + "-" + value.$D,
       mobile_number: phone,
       email: email,
     });
@@ -45,10 +50,15 @@ function AddCustomer() {
       .then((result) => console.log(result), setOpen(true))
       .catch((error) => console.log("error", error));
   }
-
+  // console.log(date);
   const handleClose = () => {
     setOpen(false);
   };
+  // const [value, setValue] = useState(dayjs("2014-08-18T21:11:54"));
+  // const handleChange = (newValue) => {
+  //   setValue(newValue);
+  // };
+  // console.log(value.$y + "-" + (value.$M + 1) + "-" + value.$D);
   return (
     <div>
       <h1>Create New Customer</h1>
@@ -139,22 +149,14 @@ function AddCustomer() {
         />
         <br />
         <br />
-        {/* <TextField
-          variant="outlined"
-          label="Date* YYYY-MM-DD"
-          type="text"
-          value={date}
-          onChange={(e) => {
-            setDate(e.target.value);
-          }}
-        /> */}
+
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DesktopDatePicker
             label="Date desktop"
-            inputFormat="MM/DD/YYYY"
+            inputFormat="DD/MM/YYYY"
             value={date}
             onChange={(date) => {
-              setDate(date.$y + "-" + date.$W + "-" + date.$D);
+              setDate(date.$y + "-" + (date.$M + 1) + "-" + date.$D);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -184,7 +186,7 @@ function AddCustomer() {
         <br />
         <br />
         <Button variant="outlined" type="submit" onClick={handelcreate}>
-          Create
+          Add New
         </Button>
       </div>
     </div>

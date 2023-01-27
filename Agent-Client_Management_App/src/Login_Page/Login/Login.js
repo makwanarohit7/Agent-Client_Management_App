@@ -106,6 +106,18 @@ function Login() {
               >
                 Sign In
               </Button>
+              <Grid container>
+                <Grid item>
+                  Don't have an account?
+                  <Button
+                    onClick={() => {
+                      navigate("/singup");
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </Grid>
+              </Grid>
             </Box>
           </Box>
         </Container>

@@ -140,11 +140,20 @@ app.get("/policy", (req, res) => {
     else console.log(err);
   });
 });
-
+app.get("/policy/:policy_id", (req, res) => {
+  mysqlConnection.query(
+    "select * from policy where policy_id=?",
+    [req.params.policy_id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
 app.post("/policy", (req, res) => {
   mysqlConnection.query(
-    "insert into policy values(?,?)",
-    [req.body.policy_id, req.body.policy_name],
+    "insert into policy (policy_name)values(?)",
+    [req.body.policy_name],
     (err, rows, fields) => {
       if (!err) res.send("Insertion Completed");
       else console.log(err);

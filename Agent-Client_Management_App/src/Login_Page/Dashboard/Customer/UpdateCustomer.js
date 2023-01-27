@@ -15,11 +15,13 @@ function UpdateCustomer() {
   const [date, setDate] = useState(dayjs());
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [dv, setDv] = useState("");
   const [open, setOpen] = useState(false);
   const handleClose = () => {
     setOpen(false);
   };
   const { userId } = useParams();
+
   useEffect(() => {
     var requestOptions = {
       method: "GET",
@@ -40,9 +42,16 @@ function UpdateCustomer() {
         setDate(data[0].customer_birthdate.split("T18:")[0]);
         setPhone(data[0].customer_mobile_number);
         setEmail(data[0].customer_email);
+        setDv(data[0].customer_birthdate);
       })
       .catch((error) => console.log("error", error));
   }, []);
+  // console.log(dv);
+  // const [value, setValue] = useState(dayjs(dv));
+
+  // const handleChange = (newValue) => {
+  //   setValue(newValue);
+  // };
   const handelupdate = () => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -55,6 +64,7 @@ function UpdateCustomer() {
       address: address,
       pincode: pincode,
       birthdate: date,
+      // birthdate: value.$y + "-" + (value.$M + 1) + "-" + value.$D,
       mobile_number: phone,
       email: email,
       customer_id: id,
@@ -169,7 +179,7 @@ function UpdateCustomer() {
             inputFormat="DD/MM/YYYY"
             value={date}
             onChange={(date) => {
-              setDate(date.$y + "-" + date.$W + "-" + date.$D);
+              setDate(date.$y + "-" + (date.$M + 1) + "-" + date.$D);
             }}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -199,7 +209,7 @@ function UpdateCustomer() {
         <br />
         <br />
         <Button variant="outlined" type="submit" onClick={handelupdate}>
-          Create
+          Update
         </Button>
       </div>
     </div>
