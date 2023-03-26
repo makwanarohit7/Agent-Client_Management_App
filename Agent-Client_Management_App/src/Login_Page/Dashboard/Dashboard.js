@@ -28,6 +28,8 @@ import UpdatePolicy from "./Policy/UpdatePolicy";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import Assign_policy from "./Assign_policy";
+import Report from "./Report Page/Report";
+import Show_policy from "./Show_policy";
 function Dashboard() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -118,6 +120,19 @@ function Dashboard() {
                 </ListItemButton>
               </ListItem>
             </List>
+            <List>
+              <ListItem
+                disablePadding
+                onClick={() => {
+                  navigate("/dashboard/report");
+                }}
+              >
+                <ListItemButton>
+                  <ListItemIcon></ListItemIcon>
+                  <ListItemText primary={"Report"} />
+                </ListItemButton>
+              </ListItem>
+            </List>
           </Drawer>
           <Box
             component="main"
@@ -130,6 +145,7 @@ function Dashboard() {
                 path="/assign-policy/:userId"
                 element={<Assign_policy />}
               />
+              <Route path="/show-policy/:userId" element={<Show_policy />} />
               <Route path="customer/*" element={<Customer />} />
               <Route path="policy/*" element={<Policy />} />
               <Route path="/customer/AddCustomer" element={<AddCustomer />} />
@@ -137,12 +153,12 @@ function Dashboard() {
                 path="/customer/UpdateCustomer/:userId"
                 element={<UpdateCustomer />}
               />
-
               <Route path="/customer/AddPolicy" element={<AddPolicy />} />
               <Route
                 path="/customer/UpdatePolicy/:userId"
                 element={<UpdatePolicy />}
               />
+              <Route path="/report" element={<Report />} />
             </Routes>
           </Box>
         </Box>

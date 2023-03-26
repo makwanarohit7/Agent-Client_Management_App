@@ -33,7 +33,7 @@ function AddPolicy() {
   };
   return (
     <div>
-      <h1>Create New Customer</h1>
+      <h1>Create New Policy</h1>
       <div>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert
@@ -44,17 +44,7 @@ function AddPolicy() {
             Success New User Added
           </Alert>
         </Snackbar>
-        <TextField
-          variant="outlined"
-          label="Id Number*"
-          type="number"
-          value={id}
-          onChange={(e) => {
-            setId(e.target.value);
-          }}
-        />
-        <br />
-        <br />
+
         <TextField
           variant="outlined"
           label="Name*"

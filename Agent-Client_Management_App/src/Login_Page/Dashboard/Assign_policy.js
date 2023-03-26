@@ -12,35 +12,35 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import {
-  DatePicker,
-  DesktopDatePicker,
-  LocalizationProvider,
-} from "@mui/x-date-pickers-pro";
+import { addMonths } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
-import {
-  DateRangePicker,
-  DateRange,
-} from "@mui/x-date-pickers-pro/DateRangePicker";
 import dayjs, { Dayjs } from "dayjs";
-
 import { styled } from "@mui/material/styles";
-
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { format } from "date-fns";
+// import DatePicker from "react-datepicker";
+// import "react-datepicker/dist/react-datepicker.css";
 
 function Assign_policy() {
   const { userId } = useParams();
   const [id, setId] = useState("");
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [policy, setPolicy] = useState("");
-
-  const [date, setDate] = useState(dayjs());
-  const [number, setNumber] = useState("");
-  const [name, setName] = useState("");
+  const [policy, setPolicy] = useState();
+  const [startdate, setStartDate] = useState("2023-01-01");
+  // const [startDate, setStartDate] = useState("");
+  const [endD, setEndD] = useState("");
+  const [year, setYear] = useState("");
+  const [sumAssured, setSumAssured] = useState();
+  const [installment, setInstallment] = useState();
+  const [result, setResult] = useState([]);
+  const [c_p_id, setC_p_id] = useState();
+  const [assign, setAssign] = useState(false);
+  const [getId, setGetId] = useState(false);
 
   const StyledPaper = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -49,7 +49,6 @@ function Assign_policy() {
     maxWidth: 400,
     color: theme.palette.text.primary,
   }));
-  console.log("Name = " + name + ", Number = " + number);
 
   const handleClose = () => {
     setOpen(false);
@@ -79,14 +78,178 @@ function Assign_policy() {
       .then((data) => setData(data))
       .catch((error) => console.log("error", error));
   }, []);
-  // console.log(data);
-  const handelAssign = () => {};
+
+  useEffect(() => {
+    calculateEndDate(startdate, year);
+  }, [startdate, year]);
+
+  // useEffect(() => {
+  //   assign && Get_customer_policy_id();
+  //   assign && generateMonthDates(startdate, year);
+  // }, [assign]);
+
+  // useEffect(() => {
+  //   AssignTo_customer_policy_installment();
+  // }, [getId]);
+
   const handelpolicy = (event) => {
     setPolicy(event.target.value);
   };
+
+  const calculateEndDate = (startDate, year) => {
+    year = parseInt(startDate.slice(0, 4)) + parseInt(year);
+    // console.log(year + startDate.slice(4));
+    setEndD(year + startDate.slice(4));
+  };
+
+  const generateMonthDates = (startdate) => {
+    const list = [];
+    for (let index = 0; index < year * 12; index++) {
+      // list[index] = addMonths(new Date(startdate), index).toLocaleDateString();
+      list.push(format(addMonths(new Date(startdate), index), "yyyy-MM-dd"));
+    }
+    setResult(list);
+    console.log("Date Done");
+  };
+
+  const AssignTo_customer_policy_table = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      customer_for_id: id,
+      policy_id: policy,
+      sumAssred: sumAssured,
+      Installment: installment,
+      year: year,
+      StartDate: startdate,
+      EndDate: endD,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/customer_policy", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result), setOpen(true), setAssign(true))
+      .catch((error) => console.log("error", error));
+  };
+
+  const Get_customer_policy_id = () => {
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      "http://localhost:5000/customer_policy/" +
+        id +
+        "/" +
+        policy +
+        "/" +
+        sumAssured +
+        "/" +
+        installment +
+        "/" +
+        year,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then(
+        (data) => setC_p_id(data[0].customer_policy_id),
+        console.log("Completed Get Id")
+      )
+      // .then((response) => response.text())
+      // // .then((result) => console.log("Result = " + result))
+      // .then((result) => {
+      //   const parsedResult = JSON.parse(result);
+      //   const value = parsedResult[0].customer_policy_id;
+      //   setCustomer_policy_id(value);
+      //   console.log("Completed Get Id");
+      //   setGetId(true);
+      // })
+      .catch((error) => console.log("error", error));
+  };
+
+  const AssignTo_customer_policy_installment = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    var raw = JSON.stringify({
+      customer_policy_id: c_p_id,
+      date: result,
+    });
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://localhost:5000/customer_policy_installment", requestOptions)
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  };
+  const postData = async () => {
+    const data = {
+      customer_policy_id: c_p_id,
+      date: result,
+    };
+
+    try {
+      const response = await fetch("/customer_policy_installment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // const handelAssign = () => {
+  //   AssignTo_customer_policy_table();
+  //   Get_customer_policy_id();
+  //   generateMonthDates(startdate, year);
+  //   AssignTo_customer_policy_installment();
+  // };
+  const handelAssign = () => {
+    setTimeout(() => {
+      AssignTo_customer_policy_table();
+    }, 1000);
+
+    setTimeout(() => {
+      Get_customer_policy_id();
+    }, 2000);
+
+    setTimeout(() => {
+      generateMonthDates(startdate, year);
+    }, 3000);
+
+    setTimeout(() => {
+      AssignTo_customer_policy_installment();
+      // postData();
+    }, 4000);
+  };
+  // console.log(id);
   // console.log(policy);
-  // const [value, setValue] = React.useState < DateRange < Dayjs >> [null, null];
-  console.log("Name = " + name + ", Number = " + number);
+  // console.log("Sum = " + sumAssured);
+  // console.log("In = " + installment);
+  // console.log("Y = " + year);
+  // console.log("SD = " + startdate);
+  // console.log("ED = " + endD);
+  // console.log(result);
+  // console.log(c_p_id);
   return (
     <div>
       <h1>Assign_policy</h1>
@@ -97,7 +260,7 @@ function Assign_policy() {
             severity="success"
             sx={{ width: "100%" }}
           >
-            Success User Data Updated
+            Success User Data Saved
           </Alert>
         </Snackbar>
         <TextField
@@ -106,13 +269,9 @@ function Assign_policy() {
           label="Id Number*"
           type="number"
           value={id}
-          onChange={(e) => {
-            setId(e.target.value);
-          }}
         />
         <br />
         <br />
-
         <FormControl fullWidth>
           <InputLabel>Policy*</InputLabel>
           <Select
@@ -126,96 +285,103 @@ function Assign_policy() {
             </MenuItem>
             {data.map((item) => {
               return (
-                <MenuItem value={item.policy_id}>{item.policy_name}</MenuItem>
+                <MenuItem value={item.policy_id} key={item.policy_id}>
+                  {item.policy_name}
+                </MenuItem>
               );
             })}
           </Select>
         </FormControl>
-
-        {/* <LocalizationProvider
-            dateAdapter={AdapterDayjs}
-            localeText={{ start: "Check-in", end: "Check-out" }}
-          >
-            <DateRangePicker
-              value={value}
-              onChange={(newValue) => {
-                setValue(newValue);
-              }}
-              renderInput={(startProps, endProps) => (
-                <React.Fragment>
-                  <TextField {...startProps} />
-                  <Box sx={{ mx: 2 }}> to </Box>
-                  <TextField {...endProps} />
-                </React.Fragment>
-              )}
-            />
-          </LocalizationProvider> */}
         <br />
         <br />
-        <FormControl fullWidth>
-          <InputLabel>Premium Per Month *</InputLabel>
+        <FormControl fullWidth type="number">
+          <InputLabel>Sum Assured *</InputLabel>
           <OutlinedInput
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Premium Per Month *"
+            startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+            label="Sum Assured *"
+            onChange={(e) => {
+              setSumAssured(e.target.value);
+            }}
           />
         </FormControl>
         <br />
         <br />
         <FormControl fullWidth>
-          <InputLabel>Policy Coverage *</InputLabel>
+          <InputLabel>Installment Amount Per Mounth *</InputLabel>
           <OutlinedInput
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            label="Policy Coverage *"
+            startAdornment={<InputAdornment position="start">₹</InputAdornment>}
+            label="Installment Amount Per Mounth *"
+            onChange={(e) => {
+              setInstallment(e.target.value);
+            }}
           />
         </FormControl>
         <br />
         <br />
-
-        <StyledPaper>
-          <Grid>
-            <h2>Nominess Details</h2>
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Nominess Name*"
-              type="text"
-              value={name}
-              onChange={(e) => {
-                setName(e.target.value);
-              }}
-            />
-            <br />
-            <br />
-            <TextField
-              fullWidth
-              variant="outlined"
-              label="Adhar Card Number*"
-              type="number"
-              value={number}
-              onChange={(e) => {
-                setNumber(e.target.value);
-              }}
-            />
-            <br />
-            <br />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                label="Date of Borth"
-                inputFormat="DD/MM/YYYY"
-                value={date}
-                onChange={(date) => {
-                  setDate(date.$y + "-" + (date.$M + 1) + "-" + date.$D);
-                }}
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </StyledPaper>
+        <TextField
+          fullWidth
+          variant="outlined"
+          label="Year*"
+          type="number"
+          inputProps={{ min: 1, max: 25, step: 1 }}
+          onChange={(e) => {
+            setYear(e.target.value);
+          }}
+          // value={year}
+          // maxLimit={25}
+        />
         <br />
         <br />
-
+        Start Date :
+        <br />
+        <br />
+        {/* <input
+          type="date"
+          id="start-date"
+          value={startDate}
+          onChange={(e) => {
+            setStartDate(e.target.value);
+          }}
+        /> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DesktopDatePicker
+            label="Enter Date*"
+            inputFormat="DD/MM/YYYY"
+            value={startdate}
+            onChange={(startdate) => {
+              setStartDate(
+                startdate.$y + "-" + (startdate.$M + 1) + "-" + startdate.$D
+              );
+            }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+        {/* <Button
+          onClick={() => {
+            calculateEndDate(startdate, year);
+          }}
+        >
+          Click
+        </Button> */}
+        <br />
+        <br />
+        <p style={{ color: "red" }}>Expriy Date : {endD}</p>
+        <br />
+        <br />
+        {/* <p style={{ color: "blue" }}>
+          Date : {generateMonthDates(startdate, year)}
+        </p> */}
+        <Button
+          onClick={() => {
+            AssignTo_customer_policy_installment();
+          }}
+        >
+          Click
+        </Button>
+        {/* <br />
+        <br /> */}
         <Button variant="outlined" type="submit" onClick={handelAssign}>
-          Update
+          Save
         </Button>
       </div>
     </div>

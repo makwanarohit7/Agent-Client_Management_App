@@ -76,6 +76,16 @@ function Row(props) {
             Assign Policy
           </Button>
         </TableCell>
+        <TableCell align="left">
+          <Button
+            variant="contained"
+            onClick={() => {
+              navigate(`/dashboard/show-policy/${row.customer_id}`);
+            }}
+          >
+            Show Policy
+          </Button>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -208,6 +218,7 @@ function Customer() {
               <TableCell align="left">Name</TableCell>
               <TableCell align="left">Action Performed</TableCell>
               <TableCell align="left">Assign Policy</TableCell>
+              <TableCell align="left">Show Policy</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

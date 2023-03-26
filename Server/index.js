@@ -184,3 +184,160 @@ app.delete("/policy/:policy_id", (req, res) => {
 });
 
 //================================================================================================
+//Customer-Policy API===============================================================================
+
+app.get("/customer_policy", (req, res) => {
+  mysqlConnection.query(
+    "select * from customer_policy",
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+// app.get("/customer_policy/:customer_policy_id", (req, res) => {
+//   mysqlConnection.query(
+//     "select * from customer_policy where customer_policy_id=?",
+//     [req.params.customer_policy_id],
+//     (err, rows, fields) => {
+//       if (!err) res.send(rows);
+//       else console.log(err);
+//     }
+//   );
+// });
+app.get("/customer_policy/:customer_for_id", (req, res) => {
+  mysqlConnection.query(
+    "select policy_id,sumAssred,Installment,year,StartDate,EndDate from customer_policy where customer_for_id=?",
+    [req.params.customer_for_id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+
+app.get(
+  "/customer_policy/:customer_for_id/:policy_id/:sumAssred/:Installment/:year/",
+  (req, res) => {
+    mysqlConnection.query(
+      "select customer_policy_id from customer_policy where customer_for_id = ? and policy_id = ? and sumAssred = ? and Installment = ? and year=?",
+      [
+        req.params.customer_for_id,
+        req.params.policy_id,
+        req.params.sumAssred,
+        req.params.Installment,
+        req.params.year,
+      ],
+      (err, rows, fields) => {
+        if (!err) res.send(rows);
+        else console.log(err);
+      }
+    );
+  }
+);
+app.post("/customer_policy", (req, res) => {
+  mysqlConnection.query(
+    "insert into customer_policy (customer_for_id,policy_id,sumAssred,Installment,year,StartDate,EndDate) values(?,?,?,?,?,?,?);",
+    [
+      req.body.customer_for_id,
+      req.body.policy_id,
+      req.body.sumAssred,
+      req.body.Installment,
+      req.body.year,
+      req.body.StartDate,
+      req.body.EndDate,
+    ],
+    (err, rows, fields) => {
+      if (!err) res.send("Insertion Completed");
+      else console.log(err);
+    }
+  );
+});
+
+app.put("/customer_policy", (req, res) => {
+  //////////baki API LAkhva ni
+  mysqlConnection.query(
+    "update policy set policy_name=? where policy_id=?",
+    [req.body.policy_name, req.body.policy_id],
+    (err, rows, fields) => {
+      if (!err) res.send("Updation Completed");
+      else console.log(err);
+    }
+  );
+});
+
+app.delete("/customer_policy/:customer_policy_id", (req, res) => {
+  mysqlConnection.query(
+    "delete from customer_policy where customer_policy_id=?",
+    [req.params.customer_policy_id],
+    (err, rows, fields) => {
+      if (!err) res.send("Deletation Completed");
+      else console.log(err);
+    }
+  );
+});
+////////////////////////////////////////////////////////////////////////
+//================================================================================================
+//customer_policy_installment API===============================================================================
+
+app.get("/customer_policy_installment", (req, res) => {
+  mysqlConnection.query(
+    "select * from customer_policy_installment",
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+app.get("/customer_policy_installment/:id", (req, res) => {
+  mysqlConnection.query(
+    "select * from customer_policy_installment where id=?",
+    [req.params.id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+
+app.post("/customer_policy_installment", (req, res) => {
+  mysqlConnection.query(
+    "insert into customer_policy_installment (customer_policy_id,date) values(?,?);",
+    [
+      req.body.customer_policy_id,
+      req.body.date.reduce((result, date) => {
+        if (!result) {
+          return date;
+        }
+        return result + `,"${date}"`;
+      }),
+    ],
+    (err, rows, fields) => {
+      if (!err) res.send("Insertion Completed");
+      else console.log(err);
+    }
+  );
+});
+
+app.put("/customer_policy", (req, res) => {
+  //////////baki API LAkhva ni
+  mysqlConnection.query(
+    "update policy set policy_name=? where policy_id=?",
+    [req.body.policy_name, req.body.policy_id],
+    (err, rows, fields) => {
+      if (!err) res.send("Updation Completed");
+      else console.log(err);
+    }
+  );
+});
+
+app.delete("/customer_policy_installment/:id", (req, res) => {
+  mysqlConnection.query(
+    "delete from customer_policy_installment where id=?",
+    [req.params.id],
+    (err, rows, fields) => {
+      if (!err) res.send("Deletation Completed");
+      else console.log(err);
+    }
+  );
+});
