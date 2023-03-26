@@ -196,27 +196,7 @@ function Assign_policy() {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
   };
-  const postData = async () => {
-    const data = {
-      customer_policy_id: c_p_id,
-      date: result,
-    };
 
-    try {
-      const response = await fetch("/customer_policy_installment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-      console.log(result);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   // const handelAssign = () => {
   //   AssignTo_customer_policy_table();
   //   Get_customer_policy_id();
@@ -238,8 +218,7 @@ function Assign_policy() {
 
     setTimeout(() => {
       AssignTo_customer_policy_installment();
-      // postData();
-    }, 4000);
+    }, 5000);
   };
   // console.log(id);
   // console.log(policy);

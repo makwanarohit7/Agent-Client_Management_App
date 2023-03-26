@@ -300,17 +300,31 @@ app.get("/customer_policy_installment/:id", (req, res) => {
   );
 });
 
+// app.post("/customer_policy_installment", (req, res) => {
+//   mysqlConnection.query(
+//     "insert into customer_policy_installment (customer_policy_id,date) values(?,?);",
+//     [
+//       req.body.customer_policy_id,
+//       req.body.date.reduce((result, date) => {
+//         if (!result) {
+//           return date;
+//         }
+//         return result + `,"${date}"`;
+//       }, ""), // Add an empty string as the initial value
+//     ],
+//     (err, rows, fields) => {
+//       if (!err) res.send("Insertion Completed");
+//       else console.log(err);
+//     }
+//   );
+// });
+
 app.post("/customer_policy_installment", (req, res) => {
   mysqlConnection.query(
     "insert into customer_policy_installment (customer_policy_id,date) values(?,?);",
     [
       req.body.customer_policy_id,
-      req.body.date.reduce((result, date) => {
-        if (!result) {
-          return date;
-        }
-        return result + `,"${date}"`;
-      }),
+      req.body.date.map((date) => `"${date}"`).join(","),
     ],
     (err, rows, fields) => {
       if (!err) res.send("Insertion Completed");
