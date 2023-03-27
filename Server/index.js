@@ -76,6 +76,16 @@ app.get("/customer/:customer_id", (req, res) => {
     }
   );
 });
+app.get("/customer/detail/:customer_id", (req, res) => {
+  mysqlConnection.query(
+    "select customer_name,customer_mobile_number,customer_email from customer where customer_id = ?",
+    [req.params.customer_id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
 
 app.post("/customer", (req, res) => {
   mysqlConnection.query(
@@ -195,16 +205,16 @@ app.get("/customer_policy", (req, res) => {
     }
   );
 });
-// app.get("/customer_policy/:customer_policy_id", (req, res) => {
-//   mysqlConnection.query(
-//     "select * from customer_policy where customer_policy_id=?",
-//     [req.params.customer_policy_id],
-//     (err, rows, fields) => {
-//       if (!err) res.send(rows);
-//       else console.log(err);
-//     }
-//   );
-// });
+app.get("/customer_policy/CID/:customer_policy_id", (req, res) => {
+  mysqlConnection.query(
+    "select customer_for_id from customer_policy Where customer_policy_id = ?",
+    [req.params.customer_policy_id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
 app.get("/customer_policy/:customer_for_id", (req, res) => {
   mysqlConnection.query(
     "select policy_id,sumAssred,Installment,year,StartDate,EndDate from customer_policy where customer_for_id=?",
@@ -283,6 +293,16 @@ app.delete("/customer_policy/:customer_policy_id", (req, res) => {
 app.get("/customer_policy_installment", (req, res) => {
   mysqlConnection.query(
     "select * from customer_policy_installment",
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+
+app.get("/customer_policy_installment/dates", (req, res) => {
+  mysqlConnection.query(
+    "select customer_policy_id , date from customer_policy_installment",
     (err, rows, fields) => {
       if (!err) res.send(rows);
       else console.log(err);

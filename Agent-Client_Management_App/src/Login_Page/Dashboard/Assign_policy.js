@@ -144,7 +144,6 @@ function Assign_policy() {
       method: "GET",
       redirect: "follow",
     };
-
     fetch(
       "http://localhost:5000/customer_policy/" +
         id +
@@ -163,15 +162,6 @@ function Assign_policy() {
         (data) => setC_p_id(data[0].customer_policy_id),
         console.log("Completed Get Id")
       )
-      // .then((response) => response.text())
-      // // .then((result) => console.log("Result = " + result))
-      // .then((result) => {
-      //   const parsedResult = JSON.parse(result);
-      //   const value = parsedResult[0].customer_policy_id;
-      //   setCustomer_policy_id(value);
-      //   console.log("Completed Get Id");
-      //   setGetId(true);
-      // })
       .catch((error) => console.log("error", error));
   };
 
@@ -197,12 +187,6 @@ function Assign_policy() {
       .catch((error) => console.log("error", error));
   };
 
-  // const handelAssign = () => {
-  //   AssignTo_customer_policy_table();
-  //   Get_customer_policy_id();
-  //   generateMonthDates(startdate, year);
-  //   AssignTo_customer_policy_installment();
-  // };
   const handelAssign = () => {
     setTimeout(() => {
       AssignTo_customer_policy_table();
@@ -218,7 +202,7 @@ function Assign_policy() {
 
     setTimeout(() => {
       AssignTo_customer_policy_installment();
-    }, 5000);
+    }, 4000);
   };
   // console.log(id);
   // console.log(policy);
@@ -355,10 +339,10 @@ function Assign_policy() {
             AssignTo_customer_policy_installment();
           }}
         >
-          Click
+          Assign Function Manualy
         </Button>
-        {/* <br />
-        <br /> */}
+        <br />
+        <br />
         <Button variant="outlined" type="submit" onClick={handelAssign}>
           Save
         </Button>
