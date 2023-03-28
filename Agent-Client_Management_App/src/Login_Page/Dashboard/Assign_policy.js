@@ -38,7 +38,7 @@ function Assign_policy() {
   const [sumAssured, setSumAssured] = useState();
   const [installment, setInstallment] = useState();
   const [result, setResult] = useState([]);
-  const [c_p_id, setC_p_id] = useState();
+  const [c_p_id, setC_p_id] = useState("");
   const [assign, setAssign] = useState(false);
   const [getId, setGetId] = useState(false);
 
@@ -102,14 +102,25 @@ function Assign_policy() {
     setEndD(year + startDate.slice(4));
   };
 
+  // const generateMonthDates = (startdate) => {
+  //   const list = [];
+  //   for (let index = 0; index < year * 12; index++) {
+  //     // list[index] = addMonths(new Date(startdate), index).toLocaleDateString();
+  //     list.push(format(addMonths(new Date(startdate), index), "yyyy-MM-dd"));
+  //   }
+  //   setResult(list);
+  //   console.log("Date Done");
+  // };
+
   const generateMonthDates = (startdate) => {
-    const list = [];
-    for (let index = 0; index < year * 12; index++) {
-      // list[index] = addMonths(new Date(startdate), index).toLocaleDateString();
-      list.push(format(addMonths(new Date(startdate), index), "yyyy-MM-dd"));
-    }
-    setResult(list);
-    console.log("Date Done");
+    return new Promise((resolve, reject) => {
+      const list = [];
+      for (let index = 0; index < year * 12; index++) {
+        list.push(format(addMonths(new Date(startdate), index), "yyyy-MM-dd"));
+      }
+      console.log("Date Done");
+      resolve(list);
+    });
   };
 
   const AssignTo_customer_policy_table = () => {
@@ -138,34 +149,85 @@ function Assign_policy() {
       .then((result) => console.log(result), setOpen(true), setAssign(true))
       .catch((error) => console.log("error", error));
   };
-
   const Get_customer_policy_id = () => {
-    var requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
-    fetch(
-      "http://localhost:5000/customer_policy/" +
-        id +
-        "/" +
-        policy +
-        "/" +
-        sumAssured +
-        "/" +
-        installment +
-        "/" +
-        year,
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then(
-        (data) => setC_p_id(data[0].customer_policy_id),
-        console.log("Completed Get Id")
+    return new Promise((resolve, reject) => {
+      var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      fetch(
+        "http://localhost:5000/customer_policy/" +
+          id +
+          "/" +
+          policy +
+          "/" +
+          sumAssured +
+          "/" +
+          installment +
+          "/" +
+          year,
+        requestOptions
       )
-      .catch((error) => console.log("error", error));
+        .then((response) => response.json())
+        .then((data) => {
+          resolve(data[0].customer_policy_id);
+          console.log("Completed Get Id");
+        })
+        .catch((error) => reject(error));
+    });
   };
+  // const Get_customer_policy_id = () => {
+  //   var requestOptions = {
+  //     method: "GET",
+  //     redirect: "follow",
+  //   };
+  //   fetch(
+  //     "http://localhost:5000/customer_policy/" +
+  //       id +
+  //       "/" +
+  //       policy +
+  //       "/" +
+  //       sumAssured +
+  //       "/" +
+  //       installment +
+  //       "/" +
+  //       year,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setC_p_id(data[0].customer_policy_id);
+  //       console.log("Result : " + result);
+  //       console.log("Completed Get Id");
+  //     })
+  //     .catch((error) => console.log("error", error));
+  // };
 
-  const AssignTo_customer_policy_installment = () => {
+  // const AssignTo_customer_policy_installment = () => {
+  //   var myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+  //   // Replace with your code to get the customer_policy_id value
+  //   console.log("CPID : " + c_p_id);
+  //   console.log("object : " + result);
+
+  //   var raw = JSON.stringify({
+  //     customer_policy_id: c_p_id,
+  //     date: result,
+  //   });
+
+  //   var requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+
+  //   fetch("http://localhost:5000/customer_policy_installment", requestOptions)
+  //     .then((response) => response.text())
+  //     .then((result) => console.log(result))
+  //     .catch((error) => console.log("error", error));
+  // };
+  const AssignTo_customer_policy_installment = (result, c_p_id) => {
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -186,23 +248,32 @@ function Assign_policy() {
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));
   };
+  // const handelAssign = () => {
+  //   setTimeout(() => {
+  //     generateMonthDates(startdate, year);
+  //   }, 1000);
 
-  const handelAssign = () => {
-    setTimeout(() => {
-      AssignTo_customer_policy_table();
-    }, 1000);
+  //   setTimeout(() => {
+  //     AssignTo_customer_policy_table();
+  //   }, 2000);
 
-    setTimeout(() => {
-      Get_customer_policy_id();
-    }, 2000);
+  //   setTimeout(() => {
+  //     Get_customer_policy_id();
+  //   }, 3000);
 
-    setTimeout(() => {
-      generateMonthDates(startdate, year);
-    }, 3000);
-
-    setTimeout(() => {
-      AssignTo_customer_policy_installment();
-    }, 4000);
+  //   setTimeout(() => {
+  //     AssignTo_customer_policy_installment();
+  //   }, 4000);
+  // };
+  const handelAssign = async () => {
+    try {
+      const result = await generateMonthDates(startdate, year);
+      await AssignTo_customer_policy_table();
+      const c_p_id = await Get_customer_policy_id();
+      await AssignTo_customer_policy_installment(result, c_p_id);
+    } catch (error) {
+      console.error(error);
+    }
   };
   // console.log(id);
   // console.log(policy);
@@ -212,7 +283,7 @@ function Assign_policy() {
   // console.log("SD = " + startdate);
   // console.log("ED = " + endD);
   // console.log(result);
-  // console.log(c_p_id);
+
   return (
     <div>
       <h1>Assign_policy</h1>

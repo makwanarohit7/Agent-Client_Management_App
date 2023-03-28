@@ -26,6 +26,7 @@ function Show_policy() {
         data.map((item) => (
           <div key={item.policy_id}>
             <hr />
+            <p>Customer Id : {userId}</p>
             <p>policy_id : {item.policy_id}</p>
             <p>sumAssred : {item.sumAssred}</p>
             <p>Installment : {item.Installment}</p>

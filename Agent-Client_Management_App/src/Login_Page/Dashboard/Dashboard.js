@@ -100,9 +100,7 @@ function Dashboard() {
                 }}
               >
                 <ListItemButton>
-                  <ListItemIcon>
-                    <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}></Avatar>
-                  </ListItemIcon>
+                  <ListItemIcon></ListItemIcon>
                   <ListItemText primary={"Customer"} />
                 </ListItemButton>
               </ListItem>

@@ -1,7 +1,7 @@
 import { Button, TextField } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+
 import { useEffect, useState } from "react";
 
 function Report() {
@@ -10,7 +10,7 @@ function Report() {
   const [data, setData] = useState([]);
   const [newDate, setNewDate] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
-  const [cID, setCID] = useState([]);
+  const [cID, setCID] = useState("");
 
   useEffect(() => {
     var requestOptions = {
@@ -54,7 +54,6 @@ function Report() {
       .then((response) => response.json())
       .then((data) => setCID(data[0].customer_for_id))
       .catch((error) => console.log("error", error));
-    // console.log("CID SET" + cID);
   };
   const Get_customer_Details = (cID) => {
     var requestOptions = {
@@ -67,6 +66,7 @@ function Report() {
       // .then((data) => console.log(data[0]))
       .catch((error) => console.log("error", error));
   };
+
   useEffect(() => {
     if (cID) {
       Get_customer_Details(cID);
@@ -74,7 +74,6 @@ function Report() {
   }, [cID]);
   const Get_Name = (id) => {
     Get_customer_id(id);
-    // Get_customer_Details(cID);
     return customerDetails.length > 0 ? (
       <>
         <p>Customer Name : {customerDetails[0].customer_name}</p>
@@ -90,7 +89,7 @@ function Report() {
 
   // console.log(newDate);
   // console.log(cID);
-  // console.log(customerDetails);s
+  // console.log(customerDetails);
   // console.log("test");
   return (
     <div>
@@ -132,26 +131,8 @@ function Report() {
       >
         Show
       </Button>
-      {/* <Button
-        onClick={() => {
-          FilterDate(startdate, enddate);
-        }}
-      >
-        Show Filter Dates
-      </Button> */}
-      {/* <h3>Date.....</h3> */}
-      {/* {data.length > 0 ? (
-        data.map((item, index) => (
-          <div key={index}>
-            <hr />
-            <p>customer_policy_id: {item.customer_policy_id}</p>
-            <p>Date: {item.date}</p>
-          </div>
-        ))
-      ) : (
-        <p>No Data</p>
-      )} */}
-      <h2>New Date.....</h2>
+
+      <h2>Generated Report</h2>
       {newDate.length > 0 ? (
         newDate.map(
           (item, index) =>
@@ -159,7 +140,7 @@ function Report() {
               <div key={item.customer_policy_id}>
                 <hr />
                 <p>customer_policy_id: {item.customer_policy_id}</p>
-                {Get_Name(item.customer_policy_id)}
+                {/* {Get_Name(item.customer_policy_id)} */}
                 <p>Date: {item.date}</p>
               </div>
             )
