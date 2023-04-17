@@ -302,7 +302,7 @@ app.get("/customer_policy_installment", (req, res) => {
 
 app.get("/customer_policy_installment/dates", (req, res) => {
   mysqlConnection.query(
-    "select customer_policy_id , date from customer_policy_installment",
+    "select cpi.customer_policy_id, c.customer_name, c.customer_mobile_number, c.customer_email,c.customer_id, cpi.date from customer c,customer_policy cp, customer_policy_installment cpi where  cpi.customer_policy_id= cp.customer_policy_id and cp.customer_for_id=c.customer_id",
     (err, rows, fields) => {
       if (!err) res.send(rows);
       else console.log(err);
@@ -372,6 +372,52 @@ app.delete("/customer_policy_installment/:id", (req, res) => {
     (err, rows, fields) => {
       if (!err) res.send("Deletation Completed");
       else console.log(err);
+    }
+  );
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Get All Details Of The Customer Based Of Id
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get("/customer/Alldetails/:customer_id", (req, res) => {
+  mysqlConnection.query(
+    "select * from customer c,customer_policy cp , policy cpi where cp.customer_for_id=c.customer_id and cp.policy_id=cpi.policy_id and cp.customer_for_id=?",
+    [req.params.customer_id],
+    (err, rows, fields) => {
+      if (!err) res.send(rows);
+      else console.log(err);
+    }
+  );
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// customer Login
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// app.get("/customer/Alldetails/:customer_id/:customer_number", (req, res) => {
+//   mysqlConnection.query(
+//     "select * from customer c,customer_policy cp , policy cpi where cp.customer_for_id=c.customer_id and cp.policy_id=cpi.policy_id and c.customer_id=? and c.customer_mobile_number=?",
+//     [req.params.customer_id, req.params.customer_number],
+//     (err, rows, fields) => {
+//       if (!err) res.send(rows);
+//       else console.log(err);
+//     }
+//   );
+// });
+
+app.post("/customer/login", (req, res) => {
+  mysqlConnection.query(
+    "select * from customer c,customer_policy cp , policy cpi where cp.customer_for_id=c.customer_id and cp.policy_id=cpi.policy_id and c.customer_id=? and c.customer_mobile_number=?",
+    [req.body.customer_id, req.body.customer_number],
+    (err, rows, fields) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ message: "Failed to authenticate" });
+      } else if (rows.length === 0) {
+        res.status(401).json({ message: "Invalid credentials" });
+      } else {
+        res.json(rows);
+      }
     }
   );
 });

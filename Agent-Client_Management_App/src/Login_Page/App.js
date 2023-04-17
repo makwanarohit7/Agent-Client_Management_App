@@ -4,12 +4,14 @@ import Dashboard from "./Dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import SingUp from "./Login/SingUp";
 import Private from "./Login/Private";
+import CustomerPoral from "./Login/CustomerPortal";
 function App() {
   return (
     <Fragment>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/singup" element={<SingUp />} />
+        <Route path="/singup/*" element={<SingUp />} />
+        <Route path="/CustomerPortal" element={<CustomerPoral />} />
         <Route
           path="/dashboard/*"
           element={

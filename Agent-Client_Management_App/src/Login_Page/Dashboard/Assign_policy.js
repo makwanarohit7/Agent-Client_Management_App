@@ -402,18 +402,6 @@ function Assign_policy() {
         <p style={{ color: "red" }}>Expriy Date : {endD}</p>
         <br />
         <br />
-        {/* <p style={{ color: "blue" }}>
-          Date : {generateMonthDates(startdate, year)}
-        </p> */}
-        <Button
-          onClick={() => {
-            AssignTo_customer_policy_installment();
-          }}
-        >
-          Assign Function Manualy
-        </Button>
-        <br />
-        <br />
         <Button variant="outlined" type="submit" onClick={handelAssign}>
           Save
         </Button>

@@ -108,13 +108,13 @@ function Login() {
               </Button>
               <Grid container>
                 <Grid item>
-                  Don't have an account?
+                  Are You Customer?
                   <Button
                     onClick={() => {
                       navigate("/singup");
                     }}
                   >
-                    Sign Up
+                    Log in
                   </Button>
                 </Grid>
               </Grid>
