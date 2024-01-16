@@ -44,8 +44,12 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell align="left">{row.customer_id}</TableCell>
-        <TableCell align="left">{row.customer_name}</TableCell>
+        <TableCell align="left" style={{ fontSize: 20 }}>
+          {row.customer_id}
+        </TableCell>
+        <TableCell align="left" style={{ fontSize: 20 }}>
+          {row.customer_name}
+        </TableCell>
         <TableCell align="left">
           <Button
             variant="contained"
@@ -210,15 +214,45 @@ function Customer() {
       <br />
       <br />
       <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
+        <Table
+          aria-label="collapsible table"
+          // style={{
+          //   background:
+          //     "radial-gradient( circle farthest-corner at 10% 20%,  rgba(176,229,208,1) 42%, rgba(92,202,238,0.41) 93.6%",
+          // }}
+        >
+          <TableHead style={{ backgroundColor: "#514ae8" }}>
             <TableRow>
               <TableCell />
-              <TableCell>Customer Id</TableCell>
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="left">Action Performed</TableCell>
-              <TableCell align="left">Assign Policy</TableCell>
-              <TableCell align="left">Show Policy</TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+              >
+                Customer Id
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Name
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Action Performed
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Assign Policy
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Show Policy
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

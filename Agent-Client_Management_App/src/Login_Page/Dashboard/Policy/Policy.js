@@ -30,8 +30,12 @@ function Row(props) {
   return (
     <Fragment>
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
-        <TableCell align="left">{row.policy_id}</TableCell>
-        <TableCell align="left">{row.policy_name}</TableCell>
+        <TableCell align="left" style={{ fontSize: 20 }}>
+          {row.policy_id}
+        </TableCell>
+        <TableCell align="left" style={{ fontSize: 20 }}>
+          {row.policy_name}
+        </TableCell>
         <TableCell align="left">
           <Button
             variant="contained"
@@ -137,12 +141,31 @@ function Policy() {
       <br />
       <TableContainer component={Paper}>
         <Table aria-label="collapsible table">
-          <TableHead>
+          <TableHead style={{ backgroundColor: "#514ae8" }}>
             <TableRow>
-              <TableCell>Id</TableCell>
-              <TableCell align="left">Name</TableCell>
-              <TableCell align="left">Update</TableCell>
-              <TableCell align="left">Delete</TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+              >
+                Id
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Name
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Update
+              </TableCell>
+              <TableCell
+                style={{ color: "white", fontWeight: "bold", fontSize: 18 }}
+                align="left"
+              >
+                Delete
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

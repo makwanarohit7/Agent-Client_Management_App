@@ -97,7 +97,11 @@ function Report() {
   // console.log(customerDetails);
   // console.log("test");
   return (
-    <div>
+    <div
+      style={{
+        marginLeft: 150,
+      }}
+    >
       <h1>Report Generation</h1>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DesktopDatePicker

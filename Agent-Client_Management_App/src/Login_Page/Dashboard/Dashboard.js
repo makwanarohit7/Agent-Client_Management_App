@@ -36,7 +36,7 @@ function Dashboard() {
   const drawerWidth = 240;
 
   return (
-    <Fragment>
+    <Fragment className="main">
       <main>
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
@@ -46,22 +46,23 @@ function Dashboard() {
               width: `calc(100% - ${drawerWidth}px)`,
               ml: `${drawerWidth}px`,
             }}
-            style={{ backgroundColor: "#f7832a" }}
+            style={{ backgroundColor: "#514ae8" }}
           >
             <Toolbar>
               <Typography variant="h6" noWrap component="div">
-                React {pathname}
-                <Button
-                  className="logout_button"
-                  variant="contained"
-                  onClick={() => {
-                    sessionStorage.removeItem("Token");
-                    navigate("/");
-                  }}
-                >
-                  Log Out
-                </Button>
+                Agent Client Management System
               </Typography>
+              <Button
+                style={{ marginLeft: 800 }}
+                className="logout_button"
+                variant="contained"
+                onClick={() => {
+                  sessionStorage.removeItem("Token");
+                  navigate("/");
+                }}
+              >
+                Log Out
+              </Button>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -76,7 +77,7 @@ function Dashboard() {
             variant="permanent"
             anchor="left"
           >
-            <Toolbar style={{ backgroundColor: "#f7832a", color: "white" }}>
+            <Toolbar style={{ backgroundColor: "#514ae8", color: "white" }}>
               <List>
                 <ListItem
                   disablePadding
@@ -92,6 +93,7 @@ function Dashboard() {
               </List>
             </Toolbar>
             <Divider />
+
             <List>
               <ListItem
                 disablePadding
